@@ -1,120 +1,201 @@
-Great! Since you are focusing on Spring Boot with Hibernate, Spring Security, REST API, and Spring Data JPA, I'll structure the project in a scalable microservices-friendly manner with modular design.
+### 🚀 **Roadmap to Deploy the Expense Tracker Backend (Without Authentication)**  
 
-Step 1: Define the Project Structure
-Since we are designing an Expense Tracker as an extension to the Bank Management App, we should follow a modular and scalable architecture:
+This guide provides a step-by-step roadmap to **build, deploy, and test the backend of the Expense Tracker** project **without authentication**.  
 
+---
+
+## **📌 Step 1: Set Up Project Structure**
+Organize the project using a **modular approach** for scalability.  
+
+```
 📂 Expense-Tracker (Root Project)
-┣ 📂 backend (Spring Boot Application)
+┣ 📂 backend (Spring Boot App)
 ┃ ┣ 📂 src/main/java/com/expense/tracker
-┃ ┃ ┣ 📂 config → (Security & CORS Config)
 ┃ ┃ ┣ 📂 controller → (REST APIs)
 ┃ ┃ ┣ 📂 dto → (Data Transfer Objects)
 ┃ ┃ ┣ 📂 entity → (JPA Entities)
-┃ ┃ ┣ 📂 repository → (Spring Data JPA Repos)
+┃ ┃ ┣ 📂 repository → (Spring Data JPA)
 ┃ ┃ ┣ 📂 service → (Business Logic)
-┃ ┃ ┗ 📂 exception → (Custom Exceptions)
+┃ ┃ ┣ 📂 exception → (Custom Exceptions)
 ┃ ┣ 📂 resources/application.yml
-┃ ┗ 📜 pom.xml (Dependencies)
-┣ 📂 frontend (React App - To be added later)
-┣ 📂 docker (For Microservices Deployment)
-┣ 📂 k8s (Kubernetes Deployment Files)
+┃ ┗ 📜 pom.xml
+┣ 📂 docker (Docker Config for Deployment)
 ┗ 📜 README.md
+```
 
-Step 2: Define the Modules and Functionalities
-Each module should handle a specific concern to ensure scalability and microservices compatibility.
+---
 
-1️⃣ User Management Module
-🔹 Features:
-✅ User Registration & Login
-✅ Role-Based Access Control (Admin/User)
-✅ JWT Authentication & Spring Security
+## **📌 Step 2: Install Required Dependencies**
+Use **Spring Boot** with **Maven** and **MySQL/PostgreSQL** for database management.
 
-2️⃣ Expense Management Module
-🔹 Features:
-✅ CRUD Operations for Expenses
-✅ Categorizing Expenses (Food, Travel, Rent, etc.)
-✅ Budget Allocation & Tracking
+✔ **Spring Web** (For REST APIs)  
+✔ **Spring Data JPA** (For ORM)  
+✔ **Hibernate** (For DB Operations)  
+✔ **Lombok** (To reduce boilerplate code)  
+✔ **MySQL/PostgreSQL Driver** (For database connection)
 
-3️⃣ Budget & Notifications Module
-🔹 Features:
-✅ Set Monthly Budget Per Category
-✅ Send Email Alerts on Overspending
-✅ Generate Monthly/Annual Reports
+---
 
-Step 3: Implementing Spring Boot Modules
-Here’s how you can proceed step by step:
+## **📌 Step 3: Define Database Configuration**
+Configure `application.yml` or `application.properties` with your database.
 
-1️⃣ Setting Up Spring Boot Project
-Create a new Spring Boot Project using Spring Initializr:
-Dependencies:
-✅ Spring Web (For REST APIs)
-✅ Spring Boot Security (For Authentication)
-✅ Spring Data JPA (For ORM)
-✅ Hibernate (For Database Handling)
-✅ Java Mail Sender (For Email Notifications)
-✅ Lombok (For Boilerplate Reduction)
-✅ MySQL/PostgreSQL (For Database)
-2️⃣ Define JPA Entities
-We'll define our User, Expense, and Budget entities in the entity package.
+Example for **MySQL**:
+```
+spring.datasource.url=jdbc:mysql://localhost:3306/expense_tracker
+spring.datasource.username=root
+spring.datasource.password=yourpassword
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.format_sql=true
+```
 
-Example: User.java
+---
 
-java
-Copy
-Edit
-@Entity
-@Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+## **📌 Step 4: Define JPA Entities**
+Create entities for:
+1️⃣ **User** (For managing users)  
+2️⃣ **Expense** (For tracking expenses)  
+3️⃣ **Budget** (For setting budgets)  
 
-    @Column(unique = true, nullable = false)
-    private String email;
+---
 
-    private String password;
-    private String role; // USER, ADMIN
+## **📌 Step 5: Implement Service & Repository Layer**
+Implement CRUD operations for:
+- **User Management**  
+- **Expense Tracking**  
+- **Budget Allocation**  
 
-    // Getters & Setters
+---
+
+## **📌 Step 6: Develop REST APIs (Without Authentication)**
+Ensure all REST APIs are working **without JWT/Security**.
+
+✔ **User APIs**
+- `POST /api/users` → Create user  
+- `GET /api/users` → Get all users  
+- `GET /api/users/{id}` → Get user by ID  
+
+✔ **Expense APIs**
+- `POST /api/expenses` → Add expense  
+- `GET /api/expenses/{userId}` → Fetch expenses for a user  
+
+✔ **Budget APIs**
+- `POST /api/budgets` → Set budget  
+- `GET /api/budgets/{userId}` → Get user budget  
+
+---
+
+## **📌 Step 7: Test APIs Using Postman**
+1️⃣ **Start the application** → `mvn spring-boot:run`  
+2️⃣ **Use Postman or cURL to test APIs**  
+
+Example: **Create Expense**
+```json
+POST /api/expenses
+{
+  "userId": 1,
+  "amount": 500,
+  "category": "Food",
+  "date": "2024-03-08"
 }
-3️⃣ Implement Authentication with Spring Security & JWT
-Configure Spring Security for Role-Based Authentication.
-Generate JWT Tokens for secure API access.
-Implement Login & Registration APIs.
-4️⃣ Develop REST APIs for Expenses
-Controller Layer: Manages HTTP Requests.
-Service Layer: Business Logic.
-Repository Layer: Handles Database Operations.
-Example: ExpenseController.java
+```
 
-java
-Copy
-Edit
-@RestController
-@RequestMapping("/api/expenses")
-public class ExpenseController {
+---
 
-    @Autowired
-    private ExpenseService expenseService;
+## **📌 Step 8: Dockerize the Application**
+1️⃣ **Create a `Dockerfile`**  
+2️⃣ **Build the Docker image** → `docker build -t expense-tracker .`  
+3️⃣ **Run the container** → `docker run -p 8080:8080 expense-tracker`  
 
-    @PostMapping
-    public ResponseEntity<Expense> addExpense(@RequestBody Expense expense) {
-        return ResponseEntity.ok(expenseService.addExpense(expense));
-    }
+---
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Expense>> getExpenses(@PathVariable Long userId) {
-        return ResponseEntity.ok(expenseService.getUserExpenses(userId));
-    }
-}
-5️⃣ Implement Email Notifications for Overspending
-Use Java Mail Sender to send alerts when the user exceeds their budget.
+## **📌 Step 9: Deploy to Cloud**
+1️⃣ **Deploy on AWS/GCP/Azure**  
+2️⃣ **Use Kubernetes for scalability**  
 
-6️⃣ Dockerize the Application for Microservices Deployment
-Create a Dockerfile for the backend.
-Deploy on Azure Kubernetes Service (AKS).
-Next Steps
-✅ Start with Spring Boot Authentication (JWT, Spring Security).
-✅ Implement CRUD APIs for Expenses.
-✅ Add Budget Tracking & Alerts.
-✅ Integrate React.js Frontend.
+---
+
+## **📌 Step 10: Monitor & Optimize Performance**
+- **Enable Logging**  
+- **Optimize Database Queries**  
+
+---
+
+### ✅ **Final Goal: Fully Functional REST APIs Without Authentication**
+Now your **Expense Tracker Backend** is deployed and ready to integrate with the frontend (React.js). 🚀### 🚀 **Next Steps to Continue Working on Your Expense Tracker Project**  
+
+Now that **User Registration & Login API** (without authentication) is working, let's move forward with implementing **Expense Management** and **Budget Tracking**.  
+
+---
+
+## **📌 Step 1: Set Up the Expense Module (CRUD Operations)**
+Now, add APIs to **create, retrieve, update, and delete expenses**.
+
+### ➤ **Tasks for this step:**
+1️⃣ **Create `Expense` Entity**  
+2️⃣ **Create `ExpenseRepository` (JPA Interface)**  
+3️⃣ **Implement `ExpenseService` (Business Logic)**  
+4️⃣ **Develop `ExpenseController` (REST APIs)**  
+5️⃣ **Test APIs with Postman**
+
+---
+
+### **📌 Step 2: Implement Budget Management**
+Now, allow users to set monthly budgets and track their expenses.
+
+### ➤ **Tasks for this step:**
+1️⃣ **Create `Budget` Entity**  
+2️⃣ **Create `BudgetRepository` (JPA Interface)**  
+3️⃣ **Implement `BudgetService` (Business Logic)**  
+4️⃣ **Develop `BudgetController` (REST APIs)**  
+5️⃣ **Test APIs with Postman**
+
+---
+
+### **📌 Step 3: Generate Expense Reports**
+Create APIs to fetch:
+✔ **Total expenses for the month**  
+✔ **Category-wise expense summary**  
+✔ **Remaining budget for the month**  
+
+### ➤ **Tasks for this step:**
+1️⃣ Implement **Expense Summary API**  
+2️⃣ Implement **Monthly Report API**  
+
+---
+
+### **📌 Step 4: Send Email Notifications for Budget Alerts**
+Use **JavaMailSender** to send an email **when a user exceeds their budget**.
+
+### ➤ **Tasks for this step:**
+1️⃣ Configure **JavaMailSender**  
+2️⃣ Send **budget alert emails** when expenses exceed the budget  
+
+---
+
+### **📌 Step 5: Dockerize the Application**
+Now, **prepare your application for deployment** using Docker.
+
+### ➤ **Tasks for this step:**
+1️⃣ Create **Dockerfile**  
+2️⃣ Build Docker image: `docker build -t expense-tracker .`  
+3️⃣ Run the container: `docker run -p 8080:8080 expense-tracker`  
+
+---
+
+### **📌 Step 6: Deploy to Cloud**
+Deploy your **Spring Boot backend** on **AWS, Azure, or Google Cloud**.
+
+### ➤ **Tasks for this step:**
+1️⃣ **Use AWS EC2, Azure App Service, or GCP Compute Engine**  
+2️⃣ **Configure a MySQL/PostgreSQL database in the cloud**  
+3️⃣ **Deploy the Docker container**  
+
+---
+
+### **📌 Step 7: Integrate Frontend (React.js)**
+Now, connect your backend to a **React.js frontend** for a **complete Expense Tracker App**.
+
+---
+
+### ✅ **Final Goal: Fully Functional Expense Tracker with REST APIs**
+Once these steps are completed, your Expense Tracker **backend will be fully functional** 🚀.
